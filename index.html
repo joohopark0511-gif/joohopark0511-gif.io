@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Advanced AI Chatbot</title>
+<style>
+/* same styling as before */
+</style>
+</head>
+<body>
+<div id="chat-container">
+    <div id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Ask me anything...">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+async function sendMessage() {
+    const userInput = document.getElementById("user-input").value;
+    if (!userInput.trim()) return;
+
+    appendMessage("user", userInput);
+    document.getElementById("user-input").value = "";
+
+    // Call backend AI + search
+    const response = await fetch("/ask", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({query: userInput})
+    });
+    const data = await response.json();
+    appendMessage("bot", data.answer);
+}
+
+function appendMessage(sender, text) {
+    const chatBox = document.getElementById("chat-box");
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `message ${sender}`;
+    msgDiv.textContent = text;
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+</body>
+</html>
