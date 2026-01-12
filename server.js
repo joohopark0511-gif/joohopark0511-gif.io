@@ -16,7 +16,7 @@ app.post("/ask", async (req, res) => {
     const unsafeKeywords = ["self-harm", "illegal", "explosives", "hack"];
     for (let word of unsafeKeywords) {
         if (query.toLowerCase().includes(word)) {
-            return res.json({answer: "I cannot answer that question for safety reasons."});
+            return res.json({ answer: "I cannot answer that question for safety reasons." });
         }
     }
 
@@ -37,13 +37,13 @@ app.post("/ask", async (req, res) => {
         if (items && items.length > 0) {
             answer = items[0].snippet;
         } else {
-            answer = "I couldn't find an answer, but try rephrasing your question.";
+            answer = "I couldn't find an answer, try rephrasing your question.";
         }
 
-        res.json({answer});
+        res.json({ answer });
     } catch (err) {
         console.error(err);
-        res.json({answer: "Sorry, there was an error searching for your question."});
+        res.json({ answer: "Sorry, there was an error searching for your question." });
     }
 });
 
