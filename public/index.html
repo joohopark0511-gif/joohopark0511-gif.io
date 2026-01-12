@@ -1,45 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Advanced AI Chatbot</title>
-<style>
-/* same styling as before */
-</style>
+  <title>AI Chatbot</title>
+  <style>
+    /* Simple chat box styles */
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
+    #input { width: 80%; }
+    #send { width: 18%; }
+  </style>
 </head>
 <body>
-<div id="chat-container">
-    <div id="chat-box"></div>
-    <input type="text" id="user-input" placeholder="Ask me anything...">
-    <button onclick="sendMessage()">Send</button>
-</div>
+  <div id="chat"></div>
+  <input id="input" type="text" placeholder="Ask me anything..." />
+  <button id="send">Send</button>
 
-<script>
-async function sendMessage() {
-    const userInput = document.getElementById("user-input").value;
-    if (!userInput.trim()) return;
+  <script>
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('input');
+    const send = document.getElementById('send');
 
-    appendMessage("user", userInput);
-    document.getElementById("user-input").value = "";
+    function addMessage(sender, text) {
+      const msg = document.createElement('div');
+      msg.textContent = sender + ': ' + text;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    }
 
-    // Call backend AI + search
-    const response = await fetch("/ask", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({query: userInput})
-    });
-    const data = await response.json();
-    appendMessage("bot", data.answer);
-}
+    send.onclick = async () => {
+      const question = input.value.trim();
+      if (!question) return;
+      addMessage('You', question);
+      input.value = '';
 
-function appendMessage(sender, text) {
-    const chatBox = document.getElementById("chat-box");
-    const msgDiv = document.createElement("div");
-    msgDiv.className = `message ${sender}`;
-    msgDiv.textContent = text;
-    chatBox.appendChild(msgDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-</script>
+      const response = await fetch('/ask', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: question})
+      });
+      const data = await response.json();
+      addMessage('Bot', data.answer);
+    };
+  </script>
 </body>
 </html>
+
